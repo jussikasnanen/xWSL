@@ -7,8 +7,8 @@ SET GITORG=jussikasnanen
 SET GITPRJ=xWSL
 SET BRANCH=master
 SET BASE=https://github.com/%GITORG%/%GITPRJ%/raw/%BRANCH%
-REM SET APPDATA=H:\Applications\Scoop
-REM SET INSTALLDIR=
+SET LXRUNOFFLINEDIR=H:\Applications\Scoop\apps\lxrunoffline\current
+SET PATH_TO_DISTRO_FILE=H:\ubuntu-wsl-jammy-2204.tar.gz
 
 REM ## Enable WSL if required
 POWERSHELL -Command "$WSL = Get-WindowsOptionalFeature -Online -FeatureName 'Microsoft-Windows-Subsystem-Linux' ; if ($WSL.State -eq 'Disabled') {Enable-WindowsOptionalFeature -FeatureName $WSL.FeatureName -Online}"
@@ -39,7 +39,7 @@ SET _rlt=%DISTROFULL:~2,2%
 IF "%_rlt%"=="\\" SET DISTROFULL=%CD%%DISTRO%
 SET GO="LxRunOffline.exe" r -n "%DISTRO%" -c
 REM ## Download Ubuntu and install packages
-REM IF NOT EXIST "%TEMP%\Ubuntu2204.tar.gz" POWERSHELL.EXE -Command "Start-BitsTransfer -source https://github.com/DesktopECHO/wsl-images/releases/latest/download/ubuntu-22.04-amd64.tar.gz -destination '%TEMP%\Ubuntu2204.tar.gz'"
+REM IF NOT EXIST "%PATH_TO_DISTRO_FILE%" POWERSHELL.EXE -Command "Start-BitsTransfer -source https://github.com/DesktopECHO/wsl-images/releases/latest/download/ubuntu-22.04-amd64.tar.gz -destination '%PATH_TO_DISTRO_FILE%'"
 %DISTROFULL:~0,1%: & MKDIR "%DISTROFULL%" & CD "%DISTROFULL%" & MKDIR logs > NUL
 (ECHO [xWSL Inputs] && ECHO. && ECHO.   Distro: %DISTRO% && ECHO.     Path: %DISTROFULL% && ECHO. RDP Port: %RDPPRT% && ECHO. SSH Port: %SSHPRT% && ECHO.DPI Scale: %WINDPI% && ECHO.) > ".\logs\%TIME:~0,2%%TIME:~3,2%%TIME:~6,2% xWSL Inputs.log"
 REM IF NOT EXIST "%TEMP%\LxRunOffline.exe" POWERSHELL.EXE -Command "wget %BASE%/LxRunOffline.exe -UseBasicParsing -OutFile '%TEMP%\LxRunOffline.exe'"
@@ -47,7 +47,7 @@ ECHO:
 ECHO @COLOR 1F                                                                                                >  "%DISTROFULL%\Uninstall %DISTRO%.cmd"
 ECHO @ECHO Ensure you are running this command with elevated rights.  Uninstall %DISTRO%?                     >> "%DISTROFULL%\Uninstall %DISTRO%.cmd"
 ECHO @PAUSE                                                                                                   >> "%DISTROFULL%\Uninstall %DISTRO%.cmd"
-REM ECHO @COPY /Y "%DISTROFULL%\LxRunOffline.exe" "%APPDATA%"                                                     >> "%DISTROFULL%\Uninstall %DISTRO%.cmd"
+REM ECHO @COPY /Y "%DISTROFULL%\LxRunOffline.exe" "%APPDATADIR%"                                                     >> "%DISTROFULL%\Uninstall %DISTRO%.cmd"
 ECHO @POWERSHELL -Command "Remove-Item ([Environment]::GetFolderPath('Desktop')+'\%DISTRO% (*) Console.cmd')" >> "%DISTROFULL%\Uninstall %DISTRO%.cmd"
 ECHO @POWERSHELL -Command "Remove-Item ([Environment]::GetFolderPath('Desktop')+'\%DISTRO% (*) Desktop.rdp')" >> "%DISTROFULL%\Uninstall %DISTRO%.cmd"
 ECHO @SCHTASKS /Delete /TN:%DISTRO% /F                                                                        >> "%DISTROFULL%\Uninstall %DISTRO%.cmd"
@@ -55,7 +55,7 @@ ECHO @CLS                                                                       
 ECHO @ECHO Uninstalling %DISTRO%, please wait...                                                              >> "%DISTROFULL%\Uninstall %DISTRO%.cmd"
 ECHO @CD ..                                                                                                   >> "%DISTROFULL%\Uninstall %DISTRO%.cmd"
 ECHO @WSLCONFIG /T %DISTRO%                                                                                   >> "%DISTROFULL%\Uninstall %DISTRO%.cmd"
-ECHO @"%APPDATA%\LxRunOffline.exe" ur -n %DISTRO%                                                             >> "%DISTROFULL%\Uninstall %DISTRO%.cmd"
+ECHO @"%LXRUNOFFLINEDIR%\LxRunOffline.exe" ur -n %DISTRO%                                                             >> "%DISTROFULL%\Uninstall %DISTRO%.cmd"
 ECHO @NETSH AdvFirewall Firewall del rule name="%DISTRO% xRDP"                                                >> "%DISTROFULL%\Uninstall %DISTRO%.cmd"   
 ECHO @NETSH AdvFirewall Firewall del rule name="%DISTRO% Secure Shell"                                        >> "%DISTROFULL%\Uninstall %DISTRO%.cmd"
 ECHO @NETSH AdvFirewall Firewall del rule name="%DISTRO% Avahi Multicast DNS"                                 >> "%DISTROFULL%\Uninstall %DISTRO%.cmd"
@@ -63,7 +63,7 @@ ECHO @RD /S /Q "%DISTROFULL%"                                                   
 ECHO Installing xWSL Distro [%DISTRO%] to "%DISTROFULL%" & ECHO This will take a few minutes, please wait... 
 IF %DEFEXL%==X (POWERSHELL.EXE -Command "wget %BASE%/excludeWSL.ps1 -UseBasicParsing -OutFile '%DISTROFULL%\excludeWSL.ps1'" & START /WAIT /MIN "Add exclusions in Windows Defender" "POWERSHELL.EXE" "-ExecutionPolicy" "Bypass" "-Command" ".\excludeWSL.ps1" "%DISTROFULL%" &  DEL ".\excludeWSL.ps1")
 ECHO:& ECHO [%TIME:~0,8%] Installing Ubuntu 22.04   (~0m30s)
-START /WAIT /MIN "Installing Ubuntu userspace..." "LxRunOffline.exe" "i" "-n" "%DISTRO%" "-f" "%TEMP%\Ubuntu2204.tar.gz" "-d" "%DISTROFULL%" 
+START /WAIT /MIN "Installing Ubuntu userspace..." "LxRunOffline.exe" "i" "-n" "%DISTRO%" "-f" "%PATH_TO_DISTRO_FILE%" "-d" "%DISTROFULL%" 
 (FOR /F "usebackq delims=" %%v IN (`PowerShell -Command "whoami"`) DO set "WAI=%%v") & ICACLS "%DISTROFULL%" /grant "%WAI%":(CI)(OI)F > NUL
 REM (COPY /Y "%TEMP%\LxRunOffline.exe" "%DISTROFULL%" > NUL ) & "%DISTROFULL%\LxRunOffline.exe" sd -n "%DISTRO%" 
 "%DISTROFULL%\LxRunOffline.exe" sd -n "%DISTRO%" 
