@@ -172,9 +172,9 @@ ECHO:
 ECHO:  - (Re)launch init from the Task Scheduler or by running the following command: 
 ECHO:    schtasks /run /tn %DISTRO%
 ECHO: 
-ECHO: %DISTRO% Installation Complete!  GUI will start in a few seconds...  
 PING -n 6 LOCALHOST > NUL 
-START "Remote Desktop Connection" "MSTSC.EXE" "/V" "%DISTROFULL%\%DISTRO% (%XU%) Desktop.rdp"
+ECHO: %DISTRO% Installation Complete! 
+REM START "Remote Desktop Connection" "MSTSC.EXE" "/V" "%DISTROFULL%\%DISTRO% (%XU%) Desktop.rdp"
 CD ..
 ECHO: 
 :ENDSCRIPT
