@@ -102,7 +102,7 @@ From a security standpoint, it would be best to fork this project so you (and on
 - Edit ```xWSL.cmd```.  On line 2 you will see ```SET GITORG=DesktopECHO``` - Change ```DesktopECHO``` to the name of your own repository.
 - Customize the script any way you like.
 - Launch the script using your repository name:
- ```PowerShell -executionpolicy bypass -command "wget https://github.com/YOUR-REPO-NAME/xWSL/raw/master/xWSL.cmd -UseBasicParsing -OutFile xWSL.cmd ; .\xWSL.cmd"```
+ ```PowerShell -executionpolicy bypass -command "wget https://github.com/jussikasnanen/xWSL/raw/master/xWSL.cmd -UseBasicParsing -OutFile xWSL.cmd ; .\xWSL.cmd"```
 
 **Quirks / Limitations / Additional Info:**
 
