@@ -66,7 +66,7 @@ ECHO:& ECHO [%TIME:~0,8%] Installing Ubuntu 22.04   (~0m30s)
 START /WAIT /MIN "Installing Ubuntu userspace..." "%LXRUNOFFLINEDIR%LxRunOffline.exe" "i" "-n" "%DISTRO%" "-f" "%PATH_TO_DISTRO_FILE%" "-d" "%DISTROFULL%" 
 (FOR /F "usebackq delims=" %%v IN (`PowerShell -Command "whoami"`) DO set "WAI=%%v") & ICACLS "%DISTROFULL%" /grant "%WAI%":(CI)(OI)F > NUL
 REM (COPY /Y "%TEMP%\LxRunOffline.exe" "%DISTROFULL%" > NUL ) & "%DISTROFULL%\LxRunOffline.exe" sd -n "%DISTRO%" 
-"%LXRUNOFFLINEDIR%\LxRunOffline.exe" sd -n "%DISTRO%" 
+"%LXRUNOFFLINEDIR%LxRunOffline.exe" sd -n "%DISTRO%" 
 ECHO [%TIME:~0,8%] APT update and clone repo (~3m00s)
 %GO% "echo 'deb http://archive.ubuntu.com/ubuntu/ jammy main restricted universe' > /etc/apt/sources.list"
 %GO% "echo 'deb http://archive.ubuntu.com/ubuntu/ jammy-updates main restricted universe' >> /etc/apt/sources.list"
