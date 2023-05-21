@@ -7,7 +7,7 @@ SET GITORG=jussikasnanen
 SET GITPRJ=xWSL
 SET BRANCH=master
 SET BASE=https://github.com/%GITORG%/%GITPRJ%/raw/%BRANCH%
-SET LXRUNOFFLINEDIR=H:\Applications\Scoop\apps\lxrunoffline\current
+SET LXRUNOFFLINEDIR=H:\Applications\Scoop\apps\lxrunoffline\current\
 SET PATH_TO_DISTRO_FILE=H:\ubuntu-wsl-jammy-2204.tar.gz
 
 REM ## Enable WSL if required
@@ -37,7 +37,7 @@ SET DEFEXL=NONO& SET /p DEFEXL=[Not recommended!] Type X to eXclude from Windows
 SET DISTROFULL=%CD%\%DISTRO%
 SET _rlt=%DISTROFULL:~2,2%
 IF "%_rlt%"=="\\" SET DISTROFULL=%CD%%DISTRO%
-SET GO="LxRunOffline.exe" r -n "%DISTRO%" -c
+SET GO="%LXRUNOFFLINEDIR%LxRunOffline.exe" r -n "%DISTRO%" -c
 REM ## Download Ubuntu and install packages
 REM IF NOT EXIST "%PATH_TO_DISTRO_FILE%" POWERSHELL.EXE -Command "Start-BitsTransfer -source https://github.com/DesktopECHO/wsl-images/releases/latest/download/ubuntu-22.04-amd64.tar.gz -destination '%PATH_TO_DISTRO_FILE%'"
 %DISTROFULL:~0,1%: & MKDIR "%DISTROFULL%" & CD "%DISTROFULL%" & MKDIR logs > NUL
@@ -47,7 +47,7 @@ ECHO:
 ECHO @COLOR 1F                                                                                                >  "%DISTROFULL%\Uninstall %DISTRO%.cmd"
 ECHO @ECHO Ensure you are running this command with elevated rights.  Uninstall %DISTRO%?                     >> "%DISTROFULL%\Uninstall %DISTRO%.cmd"
 ECHO @PAUSE                                                                                                   >> "%DISTROFULL%\Uninstall %DISTRO%.cmd"
-REM ECHO @COPY /Y "%DISTROFULL%\LxRunOffline.exe" "%APPDATADIR%"                                                     >> "%DISTROFULL%\Uninstall %DISTRO%.cmd"
+REM ECHO @COPY /Y "%DISTROFULL%LxRunOffline.exe" "%APPDATADIR%"                                                     >> "%DISTROFULL%\Uninstall %DISTRO%.cmd"
 ECHO @POWERSHELL -Command "Remove-Item ([Environment]::GetFolderPath('Desktop')+'\%DISTRO% (*) Console.cmd')" >> "%DISTROFULL%\Uninstall %DISTRO%.cmd"
 ECHO @POWERSHELL -Command "Remove-Item ([Environment]::GetFolderPath('Desktop')+'\%DISTRO% (*) Desktop.rdp')" >> "%DISTROFULL%\Uninstall %DISTRO%.cmd"
 ECHO @SCHTASKS /Delete /TN:%DISTRO% /F                                                                        >> "%DISTROFULL%\Uninstall %DISTRO%.cmd"
@@ -55,7 +55,7 @@ ECHO @CLS                                                                       
 ECHO @ECHO Uninstalling %DISTRO%, please wait...                                                              >> "%DISTROFULL%\Uninstall %DISTRO%.cmd"
 ECHO @CD ..                                                                                                   >> "%DISTROFULL%\Uninstall %DISTRO%.cmd"
 ECHO @WSLCONFIG /T %DISTRO%                                                                                   >> "%DISTROFULL%\Uninstall %DISTRO%.cmd"
-ECHO @"%LXRUNOFFLINEDIR%\LxRunOffline.exe" ur -n %DISTRO%                                                             >> "%DISTROFULL%\Uninstall %DISTRO%.cmd"
+ECHO @"%LXRUNOFFLINEDIR%LxRunOffline.exe" ur -n %DISTRO%                                                             >> "%DISTROFULL%\Uninstall %DISTRO%.cmd"
 ECHO @NETSH AdvFirewall Firewall del rule name="%DISTRO% xRDP"                                                >> "%DISTROFULL%\Uninstall %DISTRO%.cmd"   
 ECHO @NETSH AdvFirewall Firewall del rule name="%DISTRO% Secure Shell"                                        >> "%DISTROFULL%\Uninstall %DISTRO%.cmd"
 ECHO @NETSH AdvFirewall Firewall del rule name="%DISTRO% Avahi Multicast DNS"                                 >> "%DISTROFULL%\Uninstall %DISTRO%.cmd"
@@ -66,7 +66,7 @@ ECHO:& ECHO [%TIME:~0,8%] Installing Ubuntu 22.04   (~0m30s)
 START /WAIT /MIN "Installing Ubuntu userspace..." "LxRunOffline.exe" "i" "-n" "%DISTRO%" "-f" "%PATH_TO_DISTRO_FILE%" "-d" "%DISTROFULL%" 
 (FOR /F "usebackq delims=" %%v IN (`PowerShell -Command "whoami"`) DO set "WAI=%%v") & ICACLS "%DISTROFULL%" /grant "%WAI%":(CI)(OI)F > NUL
 REM (COPY /Y "%TEMP%\LxRunOffline.exe" "%DISTROFULL%" > NUL ) & "%DISTROFULL%\LxRunOffline.exe" sd -n "%DISTRO%" 
-"%DISTROFULL%\LxRunOffline.exe" sd -n "%DISTRO%" 
+"%LXRUNOFFLINEDIR%\LxRunOffline.exe" sd -n "%DISTRO%" 
 ECHO [%TIME:~0,8%] APT update and clone repo (~3m00s)
 %GO% "echo 'deb http://archive.ubuntu.com/ubuntu/ jammy main restricted universe' > /etc/apt/sources.list"
 %GO% "echo 'deb http://archive.ubuntu.com/ubuntu/ jammy-updates main restricted universe' >> /etc/apt/sources.list"
@@ -153,7 +153,7 @@ ECHO @START /MIN "%DISTRO%" WSLCONFIG.EXE /t %DISTRO%                  >  "%DIST
 ECHO @Powershell.exe -Command "Start-Sleep 3"                          >> "%DISTROFULL%\Init.cmd"
 ECHO @START /MIN "%DISTRO%" WSL.EXE ~ -u root -d %DISTRO% -e initwsl 2 >> "%DISTROFULL%\Init.cmd"
 ECHO @WSL ~ -u %XU% -d %DISTRO% > "%DISTROFULL%\%DISTRO% (%XU%) Console.cmd"
-"LxRunOffline.exe" su -n %DISTRO% -v 1000
+"%LXRUNOFFLINEDIR%LxRunOffline.exe" su -n %DISTRO% -v 1000
 POWERSHELL -Command "Copy-Item '%DISTROFULL%\%DISTRO% (%XU%) Console.cmd' ([Environment]::GetFolderPath('Desktop'))"
 POWERSHELL -Command "Copy-Item '%DISTROFULL%\%DISTRO% (%XU%) Desktop.rdp' ([Environment]::GetFolderPath('Desktop'))"
 ECHO Building Scheduled Task...
