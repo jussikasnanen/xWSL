@@ -7,6 +7,7 @@ SET GITORG=jussikasnanen
 SET GITPRJ=xWSL
 SET BRANCH=master
 SET BASE=https://github.com/%GITORG%/%GITPRJ%/raw/%BRANCH%
+REM SET APPDATA=H:\Applications\Scoop
 REM SET INSTALLDIR=
 
 REM ## Enable WSL if required
@@ -64,7 +65,8 @@ IF %DEFEXL%==X (POWERSHELL.EXE -Command "wget %BASE%/excludeWSL.ps1 -UseBasicPar
 ECHO:& ECHO [%TIME:~0,8%] Installing Ubuntu 22.04   (~0m30s)
 START /WAIT /MIN "Installing Ubuntu userspace..." "LxRunOffline.exe" "i" "-n" "%DISTRO%" "-f" "%TEMP%\Ubuntu2204.tar.gz" "-d" "%DISTROFULL%" 
 (FOR /F "usebackq delims=" %%v IN (`PowerShell -Command "whoami"`) DO set "WAI=%%v") & ICACLS "%DISTROFULL%" /grant "%WAI%":(CI)(OI)F > NUL
-(COPY /Y "%TEMP%\LxRunOffline.exe" "%DISTROFULL%" > NUL ) & "%DISTROFULL%\LxRunOffline.exe" sd -n "%DISTRO%" 
+REM (COPY /Y "%TEMP%\LxRunOffline.exe" "%DISTROFULL%" > NUL ) & "%DISTROFULL%\LxRunOffline.exe" sd -n "%DISTRO%" 
+"%DISTROFULL%\LxRunOffline.exe" sd -n "%DISTRO%" 
 ECHO [%TIME:~0,8%] APT update and clone repo (~3m00s)
 %GO% "echo 'deb http://archive.ubuntu.com/ubuntu/ jammy main restricted universe' > /etc/apt/sources.list"
 %GO% "echo 'deb http://archive.ubuntu.com/ubuntu/ jammy-updates main restricted universe' >> /etc/apt/sources.list"
