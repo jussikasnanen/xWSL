@@ -63,7 +63,7 @@ ECHO @RD /S /Q "%DISTROFULL%"                                                   
 ECHO Installing xWSL Distro [%DISTRO%] to "%DISTROFULL%" & ECHO This will take a few minutes, please wait... 
 IF %DEFEXL%==X (POWERSHELL.EXE -Command "wget %BASE%/excludeWSL.ps1 -UseBasicParsing -OutFile '%DISTROFULL%\excludeWSL.ps1'" & START /WAIT /MIN "Add exclusions in Windows Defender" "POWERSHELL.EXE" "-ExecutionPolicy" "Bypass" "-Command" ".\excludeWSL.ps1" "%DISTROFULL%" &  DEL ".\excludeWSL.ps1")
 ECHO:& ECHO [%TIME:~0,8%] Installing Ubuntu 22.04   (~0m30s)
-START /WAIT /MIN "Installing Ubuntu userspace..." "LxRunOffline.exe" "i" "-n" "%DISTRO%" "-f" "%PATH_TO_DISTRO_FILE%" "-d" "%DISTROFULL%" 
+START /WAIT /MIN "Installing Ubuntu userspace..." "%LXRUNOFFLINEDIR%LxRunOffline.exe" "i" "-n" "%DISTRO%" "-f" "%PATH_TO_DISTRO_FILE%" "-d" "%DISTROFULL%" 
 (FOR /F "usebackq delims=" %%v IN (`PowerShell -Command "whoami"`) DO set "WAI=%%v") & ICACLS "%DISTROFULL%" /grant "%WAI%":(CI)(OI)F > NUL
 REM (COPY /Y "%TEMP%\LxRunOffline.exe" "%DISTROFULL%" > NUL ) & "%DISTROFULL%\LxRunOffline.exe" sd -n "%DISTRO%" 
 "%LXRUNOFFLINEDIR%\LxRunOffline.exe" sd -n "%DISTRO%" 
